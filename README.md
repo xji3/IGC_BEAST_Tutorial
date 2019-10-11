@@ -12,6 +12,8 @@ For mac users, the following commands will compile the CPU version the CPU versi
 Follow the instructions if you need to install any software.
 
 ```
+xcode-select --install
+brew install libtool autoconf automake
 git clone -b hmc-clock https://github.com/beagle-dev/beagle-lib.git
 cd beagle-lib
 ./autogen.sh
@@ -27,8 +29,6 @@ The following commands will compile the `gene_conversion` branch of BEAST.
 You may need to install ant by `brew install ant` through [Homebrew](https://brew.sh/).
 
 ```
-xcode-select --install
-brew install libtool autoconf automake
 git clone -b gene_conversion https://github.com/beast-dev/beast-mcmc.git
 cd beast-mcmc
 ant
