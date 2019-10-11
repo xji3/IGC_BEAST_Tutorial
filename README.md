@@ -37,6 +37,20 @@ This will compile the `jar` files under `beast-mcmc/build/dist/` where you can f
 #### 1 Set up the IGC model in BEAST xml file
 The example [xml file](xmls/first_example.xml) sets up the HKY+IGC model with single IGC parameter for the YEAST ribosomal protein coding genes `YLR406C` and `YDL075W`.
 
+Before runnign the xml file, let's look at the command line options for running BEAST.
+
+```
+cd where_you_want_to_run
+java -jar -Djava.library.path=/usr/local/lib where_beast_is_git_cloned/beast-mcmc/build/dist/beast.jar -help
+```
+
+To run the example xml file, try the following lines
+
+```
+cd where_you_want_to_save_output
+java -jar -Djava.library.path=/usr/local/lib where_beast_is_git_cloned/beast-mcmc/build/dist/beast.jar -seed 666 -overwrite where_xml_file_is_stored/first_example.xml
+```
+
 to be continued...
 
 
