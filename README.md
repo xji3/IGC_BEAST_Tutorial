@@ -27,6 +27,8 @@ The following commands will compile the `gene_conversion` branch of BEAST.
 You may need to install ant by `brew install ant` through [Homebrew](https://brew.sh/).
 
 ```
+xcode-select --install
+brew install libtool autoconf automake
 git clone -b gene_conversion https://github.com/beast-dev/beast-mcmc.git
 cd beast-mcmc
 ant
