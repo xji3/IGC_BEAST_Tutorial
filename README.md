@@ -20,10 +20,7 @@ sudo make install
 ```
 
 The libraries are installed into `/usr/local/lib`.
-You can find them by
-```
-ls /usr/local/lib/*beagle*
-```.
+You can find them by `ls /usr/local/lib/*beagle*`.
 
 #### 0.2 BEAST
 The following commands will compile the `gene_conversion` branch of BEAST.
