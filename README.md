@@ -8,8 +8,8 @@ We are going to use the development branch of both BEAST and BEAGLE.  Assuming y
 Please follow the [BEAGLE installation instructions](https://github.com/beagle-dev/beagle-lib).
 But get the `hmc-clock` branch.
 
-For mac users, the following commands will compile the CPU version the CPU version.
-Follow the instructions if you need to install any software.
+For mac users, the following commands will compile the CPU version of BEAGLE.
+Follow the instructions if you need to install any other dependent software.
 
 ```
 xcode-select --install
