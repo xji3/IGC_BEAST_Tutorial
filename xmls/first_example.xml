@@ -128,15 +128,14 @@
 	</pairedParalogSitePatterns>
 
 
-    <newick id="startingTree">
-		((((((cerevisiae:0.1,paradoxus:0.1)N5:0.1,mikatae:0.2)N4:0.1,kudriavzevii:0.3)N3:0.1,bayanus:0.4)N2:0.1,castellii:0.5)N1:0.2,kluyveri:0.7)N0;
-<!-- 		((((((cerevisiae:0.10061,paradoxus:0.10061)N5:0.08394,mikatae:0.18455)N4:0.11436,kudriavzevii:0.29891)N3:0.09825,bayanus:0.39716)N2:0.12083,castellii:0.51799)N1:0.32457,kluyveri:0.84256)N0; -->
-	</newick>
+	<empiricalTreeDistributionModel id="startingTree" fileName="assignmentTree.trees">
+		<taxa idref="species"/>
+	</empiricalTreeDistributionModel>
 
 
 	<!-- Generate a tree model                                                   -->
 	<treeModel id="treeModel">
-		<newick idref="startingTree"/>
+		<empiricalTreeDistributionModel idref="startingTree"/>
 		<rootHeight>
 			<parameter id="treeModel.rootHeight"/>
 		</rootHeight>
@@ -147,6 +146,8 @@
 			<parameter id="treeModel.allInternalNodeHeights"/>
 		</nodeHeights>
 	</treeModel>
+
+
 
 	<!-- Statistic for sum of the branch lengths of the tree (tree length)       -->
 	<treeLengthStatistic id="treeLength">
@@ -243,10 +244,9 @@
 	</statistic>
  -->
 
-	<pairedParalogBranchmodel id="branchModel" substAssign="1 1 1 1 1 1 0 1 1 1 1 0+1 0">
+	<pairedParalogBranchmodel id="branchModel" substAssignFile="assignmentTree.trees">
 		<pairedParalogGeneConversionSubstitutionModel idref="baseModel"/>
 		<pairedParalogGeneConversionSubstitutionModel idref="igcModel"/>
-		<treeModel idref="treeModel"/>
 		<parameter id="time.proportion.to.duplication" value="0.5" lower="0.0" upper="1.0"/>
 	</pairedParalogBranchmodel>
 
