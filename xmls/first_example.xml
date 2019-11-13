@@ -128,14 +128,13 @@
 	</pairedParalogSitePatterns>
 
 
-	<empiricalTreeDistributionModel id="startingTree" fileName="assignmentTree.trees">
-		<taxa idref="species"/>
-	</empiricalTreeDistributionModel>
-
+    <newick id="startingTree">
+		((((((cerevisiae:0.1,paradoxus:0.1)N5:0.1,mikatae:0.2)N4:0.1,kudriavzevii:0.3)N3:0.1,bayanus:0.4)N2:0.1,castellii:0.5)N1:0.2,kluyveri:0.7)N0;
+	</newick>
 
 	<!-- Generate a tree model                                                   -->
 	<treeModel id="treeModel">
-		<empiricalTreeDistributionModel idref="startingTree"/>
+		<newick idref="startingTree"/>
 		<rootHeight>
 			<parameter id="treeModel.rootHeight"/>
 		</rootHeight>
