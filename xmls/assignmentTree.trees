@@ -1,0 +1,19 @@
+#NEXUS
+
+Begin taxa;
+	Dimensions ntax=7;
+	Taxlabels
+		bayanus
+		castellii
+		cerevisiae
+		kluyveri
+		kudriavzevii
+		mikatae
+		paradoxus
+		;
+End;
+
+Begin trees;
+
+tree STATE_0 [&lnP=-1377.9146691922583,joint=-1377.9146691922583] = [&R] ((((((cerevisiae:[&model=1]0.1,paradoxus:[&model=1]0.1)N5:[&model=1]0.1,mikatae:[&model=1]0.2)N4:[&model=1]0.1,kudriavzevii:[&model=1]0.3)N3:[&model=1]0.1,bayanus:[&model=1]0.4)N2:[&model=1]0.1,castellii:[&model=1]0.5)N1:[&model=0+1]0.2,kluyveri:[&model=0]0.7)N0:[&model=0];
+End;
