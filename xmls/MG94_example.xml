@@ -58,6 +58,7 @@
 
 
 
+
 	<!-- The sequence alignment (each sequence refers to a taxon above).         -->
 	<!-- ntax=13 nchar=336                                                       -->
 	<alignment id="alignment" dataType="nucleotide">
@@ -119,12 +120,15 @@
 		</sequence>
 	</alignment>
 
+	<convert id="codonAlignment" dataType="codon" geneticCode="universal">
+        <alignment idref="alignment"/>
+    </convert>
 
 
 	<!-- The unique patterns from 1 to end                                       -->
-	<!-- npatterns=82                                                            -->
+	<!-- npatterns=816                                                           -->
 	<patterns id="patterns" from="1" strip="false">
-		<alignment idref="alignment"/>
+		<alignment idref="codonAlignment"/>
 	</patterns>
 
 	<pairedParalogSitePatterns id="pairedPatterns" idSeparator="__"	paralogs="YLR406C YDL075W" singleCopySpecies="kluyveri duplicationNode">
@@ -136,7 +140,7 @@
 
 
     <newick id="startingTree">
-		((((((cerevisiae:0.1,paradoxus:0.1)N5:0.1,mikatae:0.2)N4:0.1,kudriavzevii:0.3)N3:0.1,bayanus:0.4)N2:0.1,castellii:0.5)N1:0.2,kluyveri:0.7)N0;
+		((((((cerevisiae:0.01,paradoxus:0.01)N5:0.01,mikatae:0.02)N4:0.01,kudriavzevii:0.03)N3:0.01,bayanus:0.04)N2:0.01,castellii:0.05)N1:0.02,kluyveri:0.07)N0;
 	</newick>
 
 <!--
@@ -159,6 +163,8 @@
 		</nodeHeights>
 	</treeModel>
 
+
+
 	<!-- Statistic for sum of the branch lengths of the tree (tree length)       -->
 	<treeLengthStatistic id="treeLength">
 		<treeModel idref="treeModel"/>
@@ -174,10 +180,9 @@
  			</mrca>
 		</duplication>
 		<duplicationTimeRatio>
-			<parameter id="duplication.time.ratio1" value="0.5" lower="0.0" upper="1.0"/>
+			<parameter id="time.proportion.to.duplication" value="0.5" lower="0.0" upper="1.0"/>
 		</duplicationTimeRatio>
 	</duplicationTreeModel>
-
 
 	<!-- The strict clock (Uniform rates across branches)                        -->
 	<strictClockBranchRates id="branchRates">
@@ -192,27 +197,36 @@
 	</rateStatistic>
 
 
-	<!-- The HKY substitution model (Hasegawa, Kishino & Yano, 1985)             -->
-	<HKYModel id="hky">
+    <!-- Frequence Model -->
+	<frequencyModel id="freqModel" dataType="codon-universal" codonFromNucleotide="true">
+		<alignment idref="alignment"/>
+		<!-- <alignment idref="codonAlignment"/> -->
 		<frequencies>
-			<frequencyModel dataType="nucleotide">
-				<frequencies>
-					<parameter id="frequencies" value="0.25 0.25 0.25 0.25"/>
-				</frequencies>
-			</frequencyModel>
+			<parameter id="nucleotidefrequencies" dimension="4"/>
 		</frequencies>
-		<kappa>
-			<parameter id="kappa" value="1.0" lower="0.0"/>
-		</kappa>
-	</HKYModel>
+     </frequencyModel>
+
+   <!-- Codon Model -->
+    <museGautCodonModel id="mg" geneticCode="universal">
+        <alpha>
+            <parameter id="alpha" value="0.1" lower="0"/>
+        </alpha>
+        <beta>
+            <parameter id="beta" value="0.5" lower="0"/>
+        </beta>
+        <kappa>
+            <parameter id="kappa" value="1.5" lower="0"/>
+        </kappa>
+        <frequencyModel idref="freqModel"/>
+    </museGautCodonModel>
 
 	<pairedParalogGeneConversionSubstitutionModel id="igcModel"  numParalog="2">
-		<HKYModel idref="hky"/>
+		<museGautCodonModel idref="mg"/>
 		<parameter id="gene.conversion.rate" value="1.0" lower="0.0"/>
 	</pairedParalogGeneConversionSubstitutionModel>
 
 	<pairedParalogGeneConversionSubstitutionModel id="baseModel"  numParalog="1">
-		<HKYModel idref="hky"/>
+		<museGautCodonModel idref="mg"/>
 		<parameter idref="gene.conversion.rate"/>
 	</pairedParalogGeneConversionSubstitutionModel>
 
@@ -223,7 +237,7 @@
 			<pairedParalogGeneConversionSubstitutionModel idref="igcModel"/>
 		</substitutionModel>
 		<gammaShape gammaCategories="4">
-			<parameter id="siteModel.alpha" value="1.0" lower="0.0"/>
+			<parameter id="siteModel.alpha" value="0.1" lower="0.0"/>
 		</gammaShape>
 	</siteModel>
 
@@ -251,15 +265,17 @@
 	<!-- Likelihood for tree given sequence data                                 -->
 	<treeDataLikelihood id="treeLikelihood" useAmbiguities="false"  scalingScheme="always" delayScaling="false">
 		<pairedParalogSitePatterns idref="pairedPatterns"/>
-		<siteModel idref="igcSiteModel"/>
+		<siteModel idref="baseSiteModel"/>
 		<duplicationTreeModel idref="duplicationTreeModel"/>
 		<strictClockBranchRates idref="branchRates"/>
 		<pairedParalogBranchmodel idref="branchModel"/>
 	</treeDataLikelihood>
 
+<!-- 
 	<report>
 		<treeDataLikelihood idref="treeLikelihood"/>
 	</report>
+ -->
 
 	<!-- Define operators                                                        -->
 	<operators id="operators" optimizationSchedule="default">
@@ -268,7 +284,7 @@
 		</scaleOperator>
 
 		<deltaExchange delta="0.01" weight="5">
-			<parameter idref="frequencies"/>
+			<parameter idref="nucleotidefrequencies"/>
 		</deltaExchange>
 
 
@@ -279,7 +295,9 @@
 		<scaleOperator scaleFactor="0.75" weight="1.0">
 			<parameter idref="siteModel.alpha"/>
 		</scaleOperator>
-
+		<uniformOperator weight="1">
+			<parameter idref="time.proportion.to.duplication"/>
+		</uniformOperator>
 
 
 <!--
@@ -306,32 +324,23 @@
 			<parameter idref="treeModel.internalNodeHeights"/>
 		</uniformOperator>
 
-		<uniformOperator weight="1">
-			<parameter idref="duplication.time.ratio1"/>
-		</uniformOperator>		
-
 
 	</operators>
 
 
 	<!-- Define MCMC                                                             -->
-	<mcmc id="mcmc" chainLength="10000000" autoOptimize="false" operatorAnalysis="geneConversionTest.ops" fullEvaluation="10000">
+	<mcmc id="mcmc" chainLength="10000000" autoOptimize="false" operatorAnalysis="geneConversionTest.ops" fullEvaluation="100">
 		<joint id="joint">
 			<prior id="prior">
 				<logNormalPrior mu="1.0" sigma="1.25" offset="0.0">
 					<parameter idref="kappa"/>
 				</logNormalPrior>
 				<dirichletPrior alpha="1.0" sumsTo="1.0">
-					<parameter idref="frequencies"/>
+					<parameter idref="nucleotidefrequencies"/>
 				</dirichletPrior>
-<!-- 
 				<logNormalPrior mu="1.0" sigma="1.25" offset="0.0">
 					<parameter idref="gene.conversion.rate"/>
 				</logNormalPrior>
- -->
- 				<exponentialPrior mean="0.5" offset="0.0">
-					<parameter idref="gene.conversion.rate"/>
-				</exponentialPrior>
 				<exponentialPrior mean="0.5" offset="0.0">
 					<parameter idref="siteModel.alpha"/>
 				</exponentialPrior>
@@ -358,7 +367,7 @@
 				<likelihood idref="likelihood"/>
 			</column>
 			<column label="frequency" dp="8" width="12">
-				<parameter idref="frequencies"/>
+				<parameter idref="nucleotidefrequencies"/>
 			</column>
 			<column label="alpha" dp="4" width="12">
 				<parameter idref="siteModel.alpha"/>
@@ -369,8 +378,8 @@
 			<column label="tau" dp="4" width="12">
 				<parameter idref="gene.conversion.rate"/>
 			</column>
-			<column label="duplication.time.ratio" dp="4" width="12">
-				<parameter idref="duplication.time.ratio1"/>
+			<column label="dup.proportion" dp="4" width="12">
+				<parameter idref="time.proportion.to.duplication"/>
 			</column>
 			<column label="nodeHeight" sf="6" width="12">
 				<parameter idref="treeModel.allInternalNodeHeights"/>
@@ -384,11 +393,11 @@
 			<likelihood idref="likelihood"/>
 			<parameter idref="treeModel.rootHeight"/>
 			<treeLengthStatistic idref="treeLength"/>
-			<parameter idref="frequencies"/>
+			<parameter idref="nucleotidefrequencies"/>
 			<parameter idref="kappa"/>
 			<parameter idref="siteModel.alpha"/>
 			<parameter idref="gene.conversion.rate"/>
-			<parameter idref="duplication.time.ratio1"/>
+			<parameter idref="time.proportion.to.duplication"/>
 			<parameter idref="treeModel.allInternalNodeHeights"/>
 			<parameter idref="clock.rate"/>
 			<rateStatistic idref="meanRate"/>
